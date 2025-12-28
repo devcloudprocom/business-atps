@@ -1,0 +1,42 @@
+# Node modules (ne pas copier dans l'image)
+node_modules
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Env secrets
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+*.log
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Git
+.git
+.gitignore
+
+# Mac/Windows system files
+.DS_Store
+Thumbs.db
+
+# IDE/editor configs
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+
+# Optional: coverage reports
+coverage
