@@ -7,10 +7,709 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  STUDENT
+  INSTRUCTOR
+  ADMIN
+  SCHOOL_ADMIN
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  EXPIRED
+}
+
+enum ExamMode {
+  DISTANCE
+  CLASSROOM
+  HYBRID
+}
+
+enum QuizMode {
+  EXAM
+  STUDY
+  TEST
+}
+
+enum ContentType {
+  TEXT
+  VIDEO
+  PDF
+  EPUB
+  ANNEX
+}
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+  HELPFUL
+}
+
+enum ExamStatus {
+  CREATED
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+// Utilisateurs
 model User {
-  id        String      @id @default(uuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String            @id @default(uuid()) @db.Uuid
+  email             String            @unique
+  username          String?           @unique
+  passwordHash      String
+  firstName         String?
+  lastName          String?
+  country           String?
+  language          String            @default("fr")
+  profilePicture    String?
+  role              Role              @default(STUDENT)
+  isVerified        Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  extraData         Json?
+
+  // Relations
+  subscriptions     Subscription[]
+  profiles          Profile?
+  progressions      Progression[]
+  quizSessions      QuizSession[]
+  examSessions      ExamSession[]
+  atcSessions       ATCSession[]
+  bookmarks         Bookmark[]
+  videoProgress     VideoProgress[]
+  videoReactions    VideoReaction[]
+  forumPosts        ForumPost[]
+  forumComments     ForumComment[]
+  postReactions     PostReaction[]
+  commentReactions  ForumCommentReaction[]
+  reports           Report[]
+  supportTickets    SupportTicket[]
+  avis              Avis[]
+  school            School?           @relation(fields: [schoolId], references: [id])
+  schoolId          String?           @db.Uuid
+  permissions       UserPermission[]
+  userAnswers       UserAnswer[]
+
+  @@index([email])
+  @@index([username])
+  @@index([role])
+}
+
+// Video Reactions
+model VideoReaction {
+  id                String       @id @default(uuid()) @db.Uuid
+  userId            String       @db.Uuid
+  subChapterId      String       @db.Uuid
+  type              ReactionType
+  createdAt         DateTime     @default(now())
+
+  // Relations
+  user              User         @relation(fields: [userId], references: [id])
+  subChapter        SubChapter   @relation(fields: [subChapterId], references: [id])
+
+  @@unique([userId, subChapterId])
+}
+
+// Rôles et Permissions (pour extensibilité)
+model Permission {
+  id          String           @id @default(uuid()) @db.Uuid
+  name        String           @unique
+  description String?
+
+  // Relations
+  users       UserPermission[]
+}
+
+// Relation User-Permission
+model UserPermission {
+  userId       String @db.Uuid
+  permissionId String @db.Uuid
+
+  // Relations
+  user         User       @relation(fields: [userId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([userId, permissionId])
+}
+
+// Établissements (Schools)
+model School {
+  id                String    @id @default(uuid()) @db.Uuid
+  name              String
+  address           String?
+  country           String
+  config            Json?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  users             User[]
+  exams             Exam[]
+  procteoConfigs    ProcteoConfig[]
+}
+
+// Profils utilisateurs (extensions)
+model Profile {
+  id                String    @id @default(uuid()) @db.Uuid
+  userId            String    @unique @db.Uuid
+  bio               String?
+  preferences       Json?  
+  activityHistory   Json?
+  reputationPoints  Int       @default(0)
+
+  // Relations
+  user              User      @relation(fields: [userId], references: [id])
+}
+
+// Abonnements
+model Subscription {
+  id                String               @id @default(uuid()) @db.Uuid
+  userId            String               @db.Uuid
+  plan              String               
+  durationMonths    Int
+  startDate         DateTime
+  endDate           DateTime?
+  status            SubscriptionStatus
+  stripeId          String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  // Relations
+  user              User                 @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+}
+
+// Module Cours / Content
+model Topic {
+  id                String      @id @default(uuid()) @db.Uuid
+  name              String
+  description       String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  // Relations
+  chapters          Chapter[]
+}
+
+// Chapitres et Sous-chapitres
+model Chapter {
+  id                String       @id @default(uuid()) @db.Uuid
+  topicId           String       @db.Uuid
+  name              String
+  description       String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  // Relations
+  topic             Topic        @relation(fields: [topicId], references: [id])
+  subChapters       SubChapter[]
+  progressions      Progression[]
+  questions         Question[]
+}
+
+// Sous-chapitres
+model SubChapter {
+  id                String       @id @default(uuid()) @db.Uuid
+  chapterId         String       @db.Uuid
+  name              String
+  content           String?     
+  type              ContentType
+  fileUrl           String?  
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  extraData         Json? 
+
+  // Relations
+  chapter           Chapter      @relation(fields: [chapterId], references: [id])
+  progressions      Progression[]
+  bookmarks         Bookmark[]
+  videoProgress     VideoProgress[]
+  videoReactions    VideoReaction[]
+  questions         Question[]
+}
+
+// Suivi de la progression vidéo
+model VideoProgress {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  subChapterId      String   @db.Uuid
+  progress          Float    @default(0.0)
+  lastWatched       DateTime?
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+  subChapter        SubChapter @relation(fields: [subChapterId], references: [id])
+}
+
+// Signets / Favoris
+model Bookmark {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  subChapterId      String?  @db.Uuid
+  questionId        String?  @db.Uuid
+  note              String?
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+  subChapter        SubChapter? @relation(fields: [subChapterId], references: [id])
+  question          Question? @relation(fields: [questionId], references: [id])
+}
+
+// Module Dictionnaire
+model DictionaryTerm {
+  id                String   @id @default(uuid()) @db.Uuid
+  term              String   @unique
+  definition        String
+  category          String?
+  featured          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// Module QuestionBank
+model Question {
+  id                String   @id @default(uuid()) @db.Uuid
+  questionId        String   @unique
+  text              String
+  options           Json
+  correctAnswer     String
+  explanation       String
+  images            String[]
+  explanationImages String[]
+  qualityScore      Int?
+  chapterId         String?  @db.Uuid
+  subChapterId      String?  @db.Uuid
+  country           String?
+  authority         String?
+  tags              String[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  chapter           Chapter? @relation(fields: [chapterId], references: [id])
+  subChapter        SubChapter? @relation(fields: [subChapterId], references: [id])
+  examAppearances   ExamAppearance[]
+  quizSessions      QuizSessionQuestion[]
+  examSessions      ExamSessionQuestion[]
+  bookmarks         Bookmark[]
+  userAnswers       UserAnswer[]
+  chatInteractions  ChatInteraction[]
+}
+
+// Apparitions des questions dans les examens
+model ExamAppearance {
+  id                String   @id @default(uuid()) @db.Uuid
+  questionId        String   @db.Uuid
+  examDate          DateTime
+  authority         String?
+
+  // Relations
+  question          Question @relation(fields: [questionId], references: [id])
+}
+
+// Module Quiz / Exam / Sessions
+model QuizSession {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  mode              QuizMode
+  startTime         DateTime @default(now())
+  endTime           DateTime?
+  score             Float?
+  progress          Json?    
+  config            Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+  questions         QuizSessionQuestion[]
+  chatInteractions  ChatInteraction[]
+  e6bCalculations   E6BCalculation[]
+  calculatorUses    CalculatorUse[]
+}
+
+// Questions dans une session de quiz
+model QuizSessionQuestion {
+  quizSessionId     String   @db.Uuid
+  questionId        String   @db.Uuid
+  userAnswer        String?
+  isCorrect         Boolean?
+  timeSpent         Int?
+
+  // Relations
+  quizSession       QuizSession @relation(fields: [quizSessionId], references: [id])
+  question          Question @relation(fields: [questionId], references: [id])
+
+  @@id([quizSessionId, questionId])
+}
+
+// Interactions ChatGPT
+model ChatInteraction {
+  id                String   @id @default(uuid()) @db.Uuid
+  quizSessionId     String?  @db.Uuid
+  questionId        String?  @db.Uuid
+  userMessage       String
+  botResponse       String
+  citations         Json? 
+  mode              String
+  createdAt         DateTime @default(now())
+
+  // Relations
+  quizSession       QuizSession? @relation(fields: [quizSessionId], references: [id])
+  question          Question?    @relation(fields: [questionId], references: [id])
+}
+
+// Calculs E6B
+model E6BCalculation {
+  id                String   @id @default(uuid()) @db.Uuid
+  quizSessionId     String   @db.Uuid
+  inputs            Json    
+  results           Json 
+  createdAt         DateTime @default(now())
+
+  // Relations
+  quizSession       QuizSession @relation(fields: [quizSessionId], references: [id])
+}
+
+// Utilisation de la calculatrice
+model CalculatorUse {
+  id                String   @id @default(uuid()) @db.Uuid
+  quizSessionId     String   @db.Uuid
+  expression        String
+  result            String
+  createdAt         DateTime @default(now())
+
+  // Relations
+  quizSession       QuizSession @relation(fields: [quizSessionId], references: [id])
+}
+
+// Examens
+model Exam {
+  id                String   @id @default(uuid()) @db.Uuid
+  schoolId          String   @db.Uuid
+  name              String
+  description       String?
+  durationMinutes   Int
+  config            Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  school            School   @relation(fields: [schoolId], references: [id])
+  sessions          ExamSession[]
+}
+
+// Sessions d'examen
+model ExamSession {
+  id                String     @id @default(uuid()) @db.Uuid
+  userId            String     @db.Uuid
+  examId            String     @db.Uuid
+  startTime         DateTime   @default(now())
+  endTime           DateTime?
+  score             Float?
+  status            ExamStatus @default(CREATED)
+  timeExtension     Int        @default(0)
+  procteoData       Json?      
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  // Relations
+  user              User       @relation(fields: [userId], references: [id])
+  exam              Exam       @relation(fields: [examId], references: [id])
+  questions         ExamSessionQuestion[]
+  procteoRecordings ProcteoRecording[]
+}
+
+// Questions dans une session d'examen
+model ExamSessionQuestion {
+  examSessionId     String   @db.Uuid
+  questionId        String   @db.Uuid
+  userAnswer        String?
+  isCorrect         Boolean?
+  gradedByInstructor Boolean  @default(false)
+  instructorNote    String?
+
+  // Relations
+  examSession       ExamSession @relation(fields: [examSessionId], references: [id])
+  question          Question    @relation(fields: [questionId], references: [id])
+
+  @@id([examSessionId, questionId])
+}
+
+// Procteo (Télésurveillance)
+model ProcteoConfig {
+  id                String   @id @default(uuid()) @db.Uuid
+  schoolId          String   @db.Uuid
+  level             String   
+  rules             Json?    
+  thresholds        Json?    
+
+  // Relations
+  school            School   @relation(fields: [schoolId], references: [id])
+}
+
+// Enregistrements Procteo
+model ProcteoRecording {
+  id                String   @id @default(uuid()) @db.Uuid
+  examSessionId     String   @db.Uuid
+  type              String   
+  url               String  
+  events            Json?
+  riskScore         Float?
+  createdAt         DateTime @default(now())
+
+  // Relations
+  examSession       ExamSession @relation(fields: [examSessionId], references: [id])
+}
+
+// Simulateur ATC
+model ATCScenario {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String
+  context           Json     
+  steps             Json
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  sessions          ATCSession[]
+}
+
+// Sessions ATC
+model ATCSession {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  scenarioId        String   @db.Uuid
+  startTime         DateTime @default(now())
+  endTime           DateTime?
+  score             Float?
+  feedback          Json?    
+  dialogHistory     Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+  scenario          ATCScenario @relation(fields: [scenarioId], references: [id])
+}
+
+// Progression
+model Progression {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  chapterId         String?  @db.Uuid
+  subChapterId      String?  @db.Uuid
+  progress          Float    @default(0.0)
+  lastAccessed      DateTime @updatedAt
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+  chapter           Chapter? @relation(fields: [chapterId], references: [id])
+  subChapter        SubChapter? @relation(fields: [subChapterId], references: [id])
+}
+
+// Réponses des utilisateurs aux questions
+model UserAnswer {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  questionId        String   @db.Uuid
+  answer            String
+  isCorrect         Boolean
+  tags              String[]
+  createdAt         DateTime @default(now())
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+  question          Question @relation(fields: [questionId], references: [id])
+}
+
+// Blog
+model BlogArticle {
+  id                String   @id @default(uuid()) @db.Uuid
+  title             String
+  content           String
+  sections          Json?
+  category          String?
+  media             String[]
+  seoMeta           Json?  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// News
+model NewsItem {
+  id                String   @id @default(uuid()) @db.Uuid
+  title             String
+  content           String
+  source            String?
+  category          String?
+  featured          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// Community
+model ForumCategory {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String
+  description       String?
+
+  // Relations
+  posts             ForumPost[]
+}
+
+// Posts
+model ForumPost {
+  id                String   @id @default(uuid()) @db.Uuid
+  categoryId        String   @db.Uuid
+  userId            String   @db.Uuid
+  title             String
+  content           String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  category          ForumCategory @relation(fields: [categoryId], references: [id])
+  user              User          @relation(fields: [userId], references: [id])
+  comments          ForumComment[]
+  reactions         PostReaction[]
+  hashtags          PostHashtag[]
+  reports           Report[]
+}
+
+// Comments
+model ForumComment {
+  id                String   @id @default(uuid()) @db.Uuid
+  postId            String   @db.Uuid
+  userId            String   @db.Uuid
+  content           String
+  parentId          String?  @db.Uuid
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  post              ForumPost @relation(fields: [postId], references: [id])
+  user              User      @relation(fields: [userId], references: [id])
+  parent            ForumComment? @relation("CommentReplies", fields: [parentId], references: [id])
+  replies           ForumComment[] @relation("CommentReplies")
+  reactions         ForumCommentReaction[]
+}
+
+// Post Reactions
+model PostReaction {
+  id                String       @id @default(uuid()) @db.Uuid
+  postId            String       @db.Uuid
+  userId            String       @db.Uuid
+  type              ReactionType
+
+  // Relations
+  post              ForumPost    @relation(fields: [postId], references: [id])
+  user              User         @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+}
+
+// Comment Reactions
+model ForumCommentReaction {
+  id                String       @id @default(uuid()) @db.Uuid
+  commentId         String       @db.Uuid
+  userId            String       @db.Uuid
+  type              ReactionType
+
+  // Relations
+  comment           ForumComment @relation(fields: [commentId], references: [id])
+  user              User         @relation(fields: [userId], references: [id])
+
+  @@unique([commentId, userId])
+}
+
+// Hashtags
+model Hashtag {
+  id                String   @id @default(uuid()) @db.Uuid
+  name              String   @unique
+
+  // Relations
+  posts             PostHashtag[]
+}
+
+// Relation Post-Hashtag
+model PostHashtag {
+  postId            String   @db.Uuid
+  hashtagId         String   @db.Uuid
+
+  // Relations
+  post              ForumPost @relation(fields: [postId], references: [id])
+  hashtag           Hashtag   @relation(fields: [hashtagId], references: [id])
+
+  @@id([postId, hashtagId])
+}
+
+// Signalements
+model Report {
+  id                String   @id @default(uuid()) @db.Uuid
+  reporterId        String   @db.Uuid
+  postId            String?  @db.Uuid
+  reason            String
+  status            String   @default("PENDING")
+  createdAt         DateTime @default(now())
+
+  // Relations
+  reporter          User     @relation(fields: [reporterId], references: [id])
+  post              ForumPost? @relation(fields: [postId], references: [id])
+}
+
+// Support
+model SupportTicket {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  subject           String
+  status            String   @default("OPEN")
+  priority          String   @default("MEDIUM")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+  messages          SupportMessage[]
+}
+
+// Messages de support
+model SupportMessage {
+  id                String   @id @default(uuid()) @db.Uuid
+  ticketId          String   @db.Uuid
+  senderId          String   @db.Uuid
+  content           String
+  createdAt         DateTime @default(now())
+
+  // Relations
+  ticket            SupportTicket @relation(fields: [ticketId], references: [id])
+}
+
+//  Avis et Feedback
+model Avis {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @db.Uuid
+  rating            Int
+  comment           String?
+  createdAt         DateTime @default(now())
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+}
+
+// Logs et Audit (pour admin)
+model AuditLog {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String?  @db.Uuid
+  action            String
+  entityType        String
+  entityId          String?
+  details           Json?
+  createdAt         DateTime @default(now())
 }
