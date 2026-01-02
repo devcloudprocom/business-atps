@@ -114,7 +114,7 @@ export default function SignIn() {
               <div className="flex justify-end">
                 <Button
                   type="submit"
-                  className="w-full h-12 rounded-sm border border-border bg-white/5 hover:bg-white/10"
+                  className="w-full h-12 rounded-sm text-white border border-border bg-white/5 hover:bg-white/10"
                   disabled={isLoading}
                 >
                   {isLoading ? "Logging in..." : "Login"}

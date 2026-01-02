@@ -47,28 +47,46 @@ export function NavbarFloating() {
     };
   }, [isSheetOpen]);
 
+  // UX: si on passe de mobile -> desktop pendant que le menu est ouvert, on referme
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) setIsSheetOpen(false); // md breakpoint
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <motion.div
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="fixed left-0 mt-4 sm:mt-6 w-full min-h-16 flex items-center justify-center z-50 px-4"
+      className="fixed inset-x-0 top-0 mt-6 w-full min-h-16 flex items-center justify-center z-50 px-6"
     >
       <motion.div
+        layout
         animate={{
-          backgroundColor: scrolled
+          backgroundColor: isSheetOpen
+            ? "rgba(255, 255, 255, 1)"
+            : scrolled
             ? "rgba(255, 255, 255, 0.95)"
             : "rgba(255, 255, 255, 0.1)",
-          borderColor: scrolled
+          borderColor: isSheetOpen
+            ? "rgba(0, 0, 0, 0.08)"
+            : scrolled
             ? "rgba(0, 0, 0, 0.1)"
             : "rgba(255, 255, 255, 0.5)",
-          boxShadow: scrolled ? "0 10px 30px rgba(0, 0, 0, 0.1)" : "none",
-          maxWidth: scrolled ? "48rem" : "80rem", // max-w-3xl -> 48rem, max-w-6xl -> 72rem
-          height: scrolled ? "50px" : "60px",
+          boxShadow: isSheetOpen
+            ? "0 18px 55px rgba(0, 0, 0, 0.16)"
+            : scrolled
+              ? "0 10px 30px rgba(0, 0, 0, 0.10)"
+              : "0 12px 32px rgba(0, 0, 0, 0.06)",
+          // Keep scroll-shrink behavior, but don't constrain the card when the mobile menu is open
+          maxWidth: isSheetOpen ? "28rem" : scrolled ? "48rem" : "80rem",
         }}
         transition={{ duration: 0.35, ease: "easeInOut" }}
-        className={`relative w-full mx-auto bg-white/10 border border-white/50 backdrop-blur-md rounded-lg px-2 py-1 ${
-          scrolled ? "px-2 py-1" : "px-4 py-2"
+        className={`relative w-full mx-auto bg-white/10 border border-white/50 backdrop-blur-md rounded-2xl ${
+          isSheetOpen ? "px-4 py-4" : scrolled ? "px-3 py-2" : "px-4 py-3"
         }`}
       >
         {/* Top bar (logo + desktop nav + contact + mobile toggle) */}
@@ -85,8 +103,12 @@ export function NavbarFloating() {
                   initial={{ opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -6 }}
-                  className={`text-xl sm:text-[28px] font-medium leading-[32px] sm:leading-[40px] ${
-                    scrolled ? "text-lg sm:text-xl" : "text-xl sm:text-[28px]"
+                  className={`font-medium leading-[32px] sm:leading-[40px] ${
+                    isSheetOpen
+                      ? "text-2xl"
+                      : scrolled
+                        ? "text-lg sm:text-xl"
+                        : "text-xl sm:text-[28px]"
                   }`}
                 >
                   ATPS
@@ -141,11 +163,10 @@ export function NavbarFloating() {
               >
                 <Button
                   asChild
-                  // Fix: prevent "Contact" label from sliding out/in on hover (often caused by pseudo-elements/transform styles)
-                  className="text-[14px] sm:text-[16px] leading-[26px] font-medium before:content-none after:content-none before:hidden after:hidden"
+                  className="bg-[#12071f]! hover:bg-[#12071f]/90! text-white! text-[14px] sm:text-[16px] leading-[26px] font-medium before:content-none after:content-none before:hidden after:hidden"
                 >
                   <Link
-                    className={`text-gray-500 hover:text-white transition-colors ${
+                    className={`text-white transition-colors ${
                       scrolled ? "h-[35px]" : "h-[40px] w-30"
                     }`}
                     href="/Contact"
@@ -167,7 +188,8 @@ export function NavbarFloating() {
             >
               <Button
                 variant="outline"
-                className="bg-transparent border-none shadow-none"
+                size="icon"
+                className="bg-transparent border-none shadow-none rounded-full"
                 onClick={() => setIsSheetOpen((v) => !v)}
               >
                 <motion.div
@@ -186,18 +208,18 @@ export function NavbarFloating() {
           </div>
         </div>
 
-        {/* Mobile dropdown (continues downward, no dialog/overlay) */}
+        {/* Mobile dropdown (expands inside the same card to match the reference UI) */}
         <AnimatePresence initial={false}>
           {isSheetOpen && (
             <motion.div
-              className="relative w-full mx-auto bg-white border border-white backdrop-blur-md rounded-lg px-2 py-1"
+              className="md:hidden overflow-hidden mt-7"
               initial="hidden"
               animate="visible"
               exit="exit"
               variants={mobileDropdownVariants}
             >
-              <div className="pt-4 pb-3">
-                <div className="flex flex-col gap-5 px-2">
+              <div className="py-5! mt-5!">
+                <div className="flex flex-col gap-3">
                   {NAVBAR_LINKS.map((link, index) => (
                     <motion.div
                       key={link.label}
@@ -205,23 +227,27 @@ export function NavbarFloating() {
                       initial="hidden"
                       animate="visible"
                       variants={mobileItemVariants}
+                      className="py-5! mt-5!"
                     >
                       <Link
                         href={link.href}
-                        className="text-[16px] leading-[26px] font-medium text-gray-600 hover:text-gray-900 block transition-colors"
+                        className="text-[18px] py-5! mt-5! leading-[28px] font-medium text-gray-500 hover:text-gray-900 block transition-colors"
                         onClick={() => setIsSheetOpen(false)}
                       >
-                        {link.label}
+                        {link.label === "FAQ"
+                          ? "Faq"
+                          : link.label === "Testimonials"
+                            ? "Testimonial"
+                            : link.label}
                       </Link>
                     </motion.div>
                   ))}
                 </div>
 
-                <div className="pt-6 px-2">
+                <div className="pt-8">
                   <Button
                     asChild
-                    // Fix: prevent "Contact" label from sliding out/in on hover (often caused by pseudo-elements/transform styles)
-                    className="w-full text-[16px] leading-[26px] font-medium before:content-none after:content-none before:hidden after:hidden"
+                    className="w-fit px-8! bg-[#12071f]! hover:bg-[#12071f]/90! text-white! text-[16px] leading-[26px] font-medium before:content-none after:content-none before:hidden after:hidden"
                   >
                     <Link href="/Contact" onClick={() => setIsSheetOpen(false)}>
                       Contact
