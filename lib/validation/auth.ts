@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Strong password validation
 const passwordSchema = z
   .string()
   .min(8, "The password must contain at least 8 characters")
@@ -53,7 +52,7 @@ export const registerAdminSchema = z
     email: z.string().email("Invalid email"),
     password: passwordSchema,
     confirmPassword: passwordSchema,
-    role: z.literal("admin"), // Role forced to "admin"
+    role: z.literal("admin"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "The passwords do not match",

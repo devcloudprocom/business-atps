@@ -1,4 +1,4 @@
-import { Accessibility, ChartLine, ChartNoAxesColumn, ChartPie, CheckCheck, Database, Facebook, Hand, Instagram, Linkedin, Twitter, Unplug, Webhook, Workflow } from "lucide-react";
+import { ChartLine, ChartNoAxesColumn, ChartPie, CheckCheck, Database, Facebook, Hand, Instagram, Linkedin, Twitter, Unplug, Webhook, Workflow } from "lucide-react";
 
 export const NAVBAR_LINKS = [
   {

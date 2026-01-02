@@ -1,27 +1,47 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { ArrowLeftIcon } from "lucide-react";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="dark bg-background text-foreground">
-      <div className="w-full min-h-screen lg:h-screen lg:overflow-hidden grid grid-cols-1 lg:grid-cols-3 bg-background">
-        <div className="md:flex flex-col hidden sm:flex-row lg:flex-row items-center justify-center gap-6 sm:gap-10 px-6 py-10 lg:px-0 lg:py-0 lg:col-span-1">
-          <div className="w-[160px] sm:w-[200px] h-full items-center justify-center flex">
-            <Image
-              src="/assets/img_log.png"
-              alt="Fluence AI"
-              width={200}
-              height={200}
-              className="object-cover h-full w-full"
-            />
+    <div className="dark bg-background text-foreground min-h-screen">
+      <div className="w-full min-h-screen lg:h-screen lg:overflow-hidden grid grid-cols-1 lg:grid-cols-3">
+        
+        {/* Section gauche : branding (comme Neon) - cachée sur mobile */}
+        <div className="hidden lg:flex relative bg-linear-to-br from-black via-[#0000] to-[#0000] items-center justify-center border">
+          <div className="absolute inset-0 bg-linear-to-t from-transparent via-transparent to-gray-600/20" />
+          
+          <div className="relative z-10 flex flex-col items-start justify-start gap-8 px-12 text-start">
+            <h1 className="text-4xl md:text-5xl font-bold text-white/90 leading-tight">
+              Set up your<br />
+              platform in seconds.
+            </h1>
+            <p className="text-lg text-white/70 max-w-md">
+              Fast, secure and scalable access to ATPS.
+            </p>
           </div>
-          <h1 className="text-[24px] sm:text-[36px] leading-[30px] sm:leading-[40px] font-bold text-foreground/90 text-center sm:text-left">
-            Recover your ATPS access.
-          </h1>
         </div>
 
-        <div className="bg-[#131313] min-h-screen flex flex-col lg:flex-row gap-[50px] px-6 sm:px-10 lg:px-20 py-8 sm:py-10 lg:col-span-2">
-          {children}
+        {/* Section droite : formulaire + bouton Home */}
+        <div className="bg-[#131313] flex flex-col lg:col-span-2 min-h-screen">
+          <div className="p-6 lg:p-10">
+            <Link href="/">
+              <Button
+                variant="outline"
+                className="bg-transparent border-border text-foreground hover:bg-white/5 flex items-center gap-2"
+              >
+                <ArrowLeftIcon className="w-4 h-4" />
+                Home
+              </Button>
+            </Link>
+          </div>
+
+          <div className="flex-1 flex flex-col justify-center items-center px-6 lg:px-20">
+            <div className="w-full max-w-md">
+              {children}
+            </div>
+          </div>
         </div>
       </div>
     </div>

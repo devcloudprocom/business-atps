@@ -42,92 +42,78 @@ export default function ResetPassword() {
   };
 
   return (
-    <>
-      <div>
-        <Link href="/">
-          <Button
-            variant="outline"
-            className="bg-transparent border-border text-foreground text-[14px] leading-[16px] hover:bg-white/5"
-          >
-            <ArrowLeftIcon className="w-4 h-4" />
-            Home
-          </Button>
-        </Link>
+    <div className="flex flex-col justify-center gap-5 w-full max-w-sm mx-auto lg:mx-0">
+      <div className="flex flex-col items-start gap-2">
+        <h1 className="text-[24px] leading-7 font-semibold text-foreground">
+          Reset your password
+        </h1>
+        <p className="text-[16px] leading-5 text-muted-foreground">
+          Choose a new password for your account.
+        </p>
       </div>
 
-      <div className="flex flex-col justify-center gap-5 w-full max-w-sm mx-auto lg:mx-0">
-        <div className="flex flex-col items-start gap-2">
-          <h1 className="text-[24px] leading-[28px] font-semibold text-foreground">
-            Reset your password
-          </h1>
-          <p className="text-[16px] leading-[20px] text-muted-foreground">
-            Choose a new password for your account.
+      <div className="rounded-sm border border-border bg-white/5 p-4">
+        <p className="text-[14px] leading-4.5 text-foreground">Tips:</p>
+        <ul className="mt-2 list-disc ml-5 text-[14px] leading-4.5 text-muted-foreground space-y-1">
+          <li>Use at least 8 characters.</li>
+          <li>Mix letters, numbers and symbols.</li>
+          <li>Your reset link may expire after a short time.</li>
+        </ul>
+      </div>
+
+      {updated ? (
+        <div className="rounded-sm border border-border bg-white/5 p-4">
+          <p className="text-[14px] leading-4.5 text-foreground">
+            Password updated successfully.
+          </p>
+          <p className="mt-2 text-[14px] leading-4.5 text-muted-foreground">
+            You can now log in with your new password.
           </p>
         </div>
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex flex-col gap-4">
+            <FormField
+              id="newPassword"
+              label="New password"
+              error={errors.password?.message || ""}
+              register={register}
+              name="password"
+              type="password"
+              placeholder="New password"
+              className="w-full"
+              disabled={isLoading}
+            />
 
-        <div className="rounded-sm border border-border bg-white/5 p-4">
-          <p className="text-[14px] leading-[18px] text-foreground">Tips:</p>
-          <ul className="mt-2 list-disc ml-5 text-[14px] leading-[18px] text-muted-foreground space-y-1">
-            <li>Use at least 8 characters.</li>
-            <li>Mix letters, numbers and symbols.</li>
-            <li>Your reset link may expire after a short time.</li>
-          </ul>
-        </div>
+            <FormField
+              id="confirmPassword"
+              label="Confirm password"
+              error={errors.confirmPassword?.message || ""}
+              register={register}
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm password"
+              className="w-full"
+              disabled={isLoading}
+            />
 
-        {updated ? (
-          <div className="rounded-sm border border-border bg-white/5 p-4">
-            <p className="text-[14px] leading-[18px] text-foreground">
-              Password updated successfully.
-            </p>
-            <p className="mt-2 text-[14px] leading-[18px] text-muted-foreground">
-              You can now log in with your new password.
-            </p>
+            <Button
+              type="submit"
+              className="w-full h-12 text-white rounded-sm border border-border bg-white/5 hover:bg-white/10"
+              disabled={isLoading}
+            >
+              {isLoading ? "Updating password..." : "Update password"}
+            </Button>
           </div>
-        ) : (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-4">
-              <FormField
-                id="newPassword"
-                label="New password"
-                error={errors.password?.message || ""}
-                register={register}
-                name="password"
-                type="password"
-                placeholder="New password"
-                className="w-full"
-                disabled={isLoading}
-              />
+        </form>
+      )}
 
-              <FormField
-                id="confirmPassword"
-                label="Confirm password"
-                error={errors.confirmPassword?.message || ""}
-                register={register}
-                name="confirmPassword"
-                type="password"
-                placeholder="Confirm password"
-                className="w-full"
-                disabled={isLoading}
-              />
-
-              <Button
-                type="submit"
-                className="w-full h-12 text-white rounded-sm border border-border bg-white/5 hover:bg-white/10"
-                disabled={isLoading}
-              >
-                {isLoading ? "Updating password..." : "Update password"}
-              </Button>
-            </div>
-          </form>
-        )}
-
-        <div className="flex justify-center text-[16px] text-foreground font-medium gap-2">
-          Back to{" "}
-          <Link href="/sign-in" className="text-blue-500">
-            Log in
-          </Link>
-        </div>
+      <div className="flex justify-center text-[16px] text-foreground font-medium gap-2">
+        Back to{" "}
+        <Link href="/sign-in" className="text-blue-500">
+          Log in
+        </Link>
       </div>
-    </>
+  </div>
   );
 }
