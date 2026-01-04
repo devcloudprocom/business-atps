@@ -8,6 +8,7 @@ datasource db {
 }
 
 enum Role {
+  PUBLIC_STUDENT
   STUDENT
   INSTRUCTOR
   ADMIN
@@ -66,7 +67,7 @@ model User {
   country           String?
   language          String            @default("fr")
   profilePicture    String?
-  role              Role              @default(STUDENT)
+  role              Role              @default(PUBLIC_STUDENT)
   isVerified        Boolean           @default(false)
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
