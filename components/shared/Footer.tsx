@@ -63,7 +63,12 @@ export function Footer() {
                 href="/"
                 className="font-cal-sans inline-flex items-center gap-2 text-2xl sm:text-[32px] leading-[32px] font-medium text-white"
               >
-                <Image src="/assets/a_logo.png" alt="logo" width={35} height={35} />
+                <Image
+                  src="/assets/a_logo.png"
+                  alt="logo"
+                  width={30}
+                  height={30}
+                />
                 ATPS
               </Link>
             </motion.div>

@@ -122,7 +122,7 @@ export default function Header() {
           </p>
         </motion.div>
         <motion.div
-          className="flex items-center justify-between gap-2 border-b border-white/10 w-full px-4 md:px-0 sm:px-15 py-5"
+          className="flex items-center justify-between gap-2 w-full px-4 md:px-0 sm:px-15 py-5"
           variants={navVariants}
         >
           <div className="flex items-center justify-between w-full max-w-7xl mx-auto">
@@ -134,8 +134,8 @@ export default function Header() {
                 <Image
                   src="/assets/a_logo.png"
                   alt="logo"
-                  width={35}
-                  height={35}
+                  width={30}
+                  height={30}
                 />
                 ATPS
               </Link>
