@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import { Cal_Sans, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SessionProvider } from "next-auth/react";
 
 const generalSans = localFont({
   display: "swap",
@@ -89,14 +90,16 @@ export default function RootLayout({
       <body
         className={`${generalSans.variable} ${inter.variable} ${calSans.variable} font-sans antialiased dark`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </SessionProvider>
         <Toaster />
       </body>
     </html>
