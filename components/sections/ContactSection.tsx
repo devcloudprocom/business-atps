@@ -1,217 +1,322 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Info, Mail } from "lucide-react";
-import Image from "next/image";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
+import Link from "next/link";
+import { BadgeCheck, Globe, ShieldCheck } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+import { GlowingEffect } from "../ui/glowing-effect";
+import { defaultViewport } from "@/lib/motion/motion";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 export function ContactSection() {
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
+  const reduceMotion = useReducedMotion();
 
-  const staggerChildren = {
-    visible: {
+  const sectionStagger = {
+    initial: {},
+    animate: {
       transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
+        staggerChildren: 0.12,
+        delayChildren: 0.05,
+      },
+    },
+  } as const;
+
+  const fadeUp = {
+    initial: { opacity: 0, y: 18 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" as const },
+    },
+  } as const;
+
+  const fadeInRight = {
+    initial: { opacity: 0, x: 18 },
+    animate: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.6, ease: "easeOut" as const },
+    },
+  } as const;
+
+  const rowStagger = {
+    initial: {},
+    animate: {
+      transition: {
+        staggerChildren: 0.08,
+        delayChildren: 0.05,
+      },
+    },
+  } as const;
+
+  const rowItem = {
+    initial: { opacity: 0, y: 10 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.45, ease: "easeOut" as const },
+    },
+  } as const;
 
   return (
-    <div className="pt-50 bg-gray-500/5 pb-30">
-      <motion.div 
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={staggerChildren}
-        className="flex flex-col items-center justify-center gap-15"
-      >
-        {/* Header */}
-        <motion.div 
-          variants={fadeInUp}
-          className="flex flex-col items-center justify-center gap-1"
-        >
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center gap-2 bg-white backdrop-blur-sm rounded-full px-4 py-1.5 border shadow-lg border-purple-500"
-          >
-            <span className="text-[14px] leading-[16px] tracking-wide font-medium text-black">CONTACT</span>
-          </motion.div>
-          <motion.h1 
-            variants={fadeInUp}
-            className="text-[40px] leading-[44px] md:text-[50px] md:leading-[55px] lg:text-[60px] lg:leading-[60px] font-medium text-center px-4 text-foreground"
-          >
-            Get in touch with our team
-          </motion.h1>
-        </motion.div>
+    <motion.section
+      className="relative w-full overflow-hidden bg-black text-white"
+      initial={reduceMotion ? undefined : "initial"}
+      whileInView={reduceMotion ? undefined : "animate"}
+      viewport={defaultViewport}
+      variants={reduceMotion ? undefined : sectionStagger}
+    >
+      {/* Background glow (match screenshot vibe) */}
+      <div className="pointer-events-none absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-sky-400/20 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-40 -right-40 h-[620px] w-[620px] rounded-full bg-emerald-400/15 blur-3xl" />
 
-        {/* Main Content */}
-        <motion.div 
-          variants={fadeInUp}
-          className="flex flex-col lg:flex-row items-center justify-center gap-8 max-w-7xl bg-white p-6 md:p-10 rounded-xl md:rounded-2xl w-full px-4 md:px-8"
-        >
-          {/* Left Column */}
-          <div className="flex flex-col items-start justify-center gap-30 w-full lg:w-1/2">
-            {/* Contact Info */}
-            <motion.div 
-              variants={fadeInUp}
-              className="flex flex-col items-start justify-center gap-6 w-full"
+      <div className="mx-auto w-full max-w-6xl px-6 pt-48 pb-16 lg:pt-60 lg:pb-40">
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-2 lg:gap-20">
+          {/* LEFT */}
+          <div className="flex flex-col">
+            <motion.h1
+              variants={reduceMotion ? undefined : fadeUp}
+              className="text-[44px] leading-[48px] sm:text-[56px] sm:leading-[60px] font-cal-sans tracking-tight"
             >
-              <p className="text-[18px] leading-[28px] font-medium">Feel free to reach out - we'd love to connect.</p>
-              
-              <div className="flex flex-col md:flex-row items-start gap-6 w-full">
-                <motion.div 
-                  whileHover={{ x: 5 }}
-                  className="flex items-start gap-2"
-                >
-                  <Mail className="size-6 text-purple-400" />
-                  <div className="flex items-start flex-col justify-between gap-2">
-                    <p className="text-[16px] leading-[24px] font-medium">Email us</p>
-                    <a href="mailto:info@atps.com" className="hover:underline">info@atps.com</a>
-                  </div>
-                </motion.div>
-                
-                <motion.div 
-                  whileHover={{ x: 5 }}
-                  className="flex items-start gap-2"
-                >
-                  <Info className="size-6 text-purple-400" />
-                  <div className="flex items-start flex-col justify-between gap-2">
-                    <p className="text-[16px] leading-[24px] font-medium">Get support</p>
-                    <a href="mailto:support@atps.com" className="hover:underline">Chat with us</a>
-                  </div>
-                </motion.div>
-              </div>
+              Let&apos;s Connect
+            </motion.h1>
+            <motion.p
+              variants={reduceMotion ? undefined : fadeUp}
+              className="mt-4 max-w-md text-[20px] leading-[24px] text-white/70"
+            >
+              We&apos;re happy to assist you with any questions about our
+              technology, pricing plans, custom contract options, and migrations
+              assistance.
+            </motion.p>
+
+            {/* Compliance row */}
+            <motion.div
+              variants={reduceMotion ? undefined : rowStagger}
+              className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 text-[13px] leading-[18px] text-white/60"
+            >
+              <motion.div
+                variants={reduceMotion ? undefined : rowItem}
+                className="inline-flex items-center gap-2"
+              >
+                <ShieldCheck className="size-4 text-white/45" />
+                <span>SOC 2</span>
+                <span className="text-white/35">Certified</span>
+              </motion.div>
+              <motion.div
+                variants={reduceMotion ? undefined : rowItem}
+                className="inline-flex items-center gap-2"
+              >
+                <Globe className="size-4 text-white/45" />
+                <span>GDPR</span>
+                <span className="text-white/35">Compliant</span>
+              </motion.div>
+              <motion.div
+                variants={reduceMotion ? undefined : rowItem}
+                className="inline-flex items-center gap-2"
+              >
+                <BadgeCheck className="size-4 text-white/45" />
+                <span>ISO 27001</span>
+                <span className="text-white/35">Compliant</span>
+              </motion.div>
             </motion.div>
 
-            {/* Testimonial */}
-            <motion.div 
-              variants={fadeInUp}
-              className="flex flex-col items-start justify-center gap-6 w-full"
+            {/* Stats cards */}
+            <motion.div
+              variants={reduceMotion ? undefined : rowStagger}
+              className="mt-20 flex flex-col sm:flex-row gap-5"
             >
-              <h1 className="text-[20px] leading-[28px] md:text-[22px] md:leading-[30px] lg:text-[24px] lg:leading-[32px] font-medium max-w-lg">
-                "ATPS has revolutionized the way we process data. The seamless integration and advanced analytics tools have saved us countless hours and improved our decision-making."
-              </h1>
-              
-              <motion.div 
-                whileHover={{ scale: 1.02 }}
-                className="flex items-center gap-4"
+              <motion.div
+                variants={reduceMotion ? undefined : rowItem}
+                className="relative w-full sm:max-w-[270px] rounded-2xl border border-white/10 bg-white/5 px-6 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.55)]"
               >
-                <Image src="/assets/user_b.png" alt="Testimonial" width={50} height={50} />
-                <div className="flex items-start flex-col justify-between">
-                  <p className="text-[16px] leading-[24px] font-medium">John Doe</p>
-                  <p className="text-[16px] leading-[24px] text-gray-500 font-normal">CEO, Company</p>
+                <GlowingEffect
+                  disabled={false}
+                  glow
+                  blur={1}
+                  spread={26}
+                  proximity={90}
+                  borderWidth={2}
+                  className="z-0"
+                />
+                <div className="relative z-10">
+                  <p className="text-[16px] leading-[22px] text-white/75">
+                    <span className="font-semibold text-white">
+                      80% savings
+                    </span>{" "}
+                    in operational costs
+                  </p>
+                  <div className="mt-10 text-white/55 text-[14px] leading-[20px]">
+                    invenco
+                  </div>
                 </div>
               </motion.div>
+              <motion.div
+                variants={reduceMotion ? undefined : rowItem}
+                className="relative w-full sm:max-w-[270px] rounded-2xl border border-white/10 bg-white/5 px-6 py-5 shadow-[0_24px_70px_rgba(0,0,0,0.55)]"
+              >
+                <GlowingEffect
+                  disabled={false}
+                  glow
+                  blur={1}
+                  spread={26}
+                  proximity={90}
+                  borderWidth={2}
+                  className="z-0"
+                />
+                <div className="relative z-10">
+                  <p className="text-[16px] leading-[22px] text-white/75">
+                    <span className="font-semibold text-white">5x faster</span>{" "}
+                    to spin up environments via branching
+                  </p>
+                  <div className="mt-10 text-white/55 text-[14px] leading-[20px]">
+                    Mindvalley
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* slider dashes (decor) */}
+            <motion.div
+              variants={reduceMotion ? undefined : fadeUp}
+              className="mt-8 hidden sm:flex items-center gap-3 text-white/20"
+            >
+              <span className="h-[2px] w-10 rounded-full bg-white/15" />
+              <span className="h-[2px] w-10 rounded-full bg-white/8" />
+              <span className="h-[2px] w-10 rounded-full bg-white/8" />
+              <span className="h-[2px] w-10 rounded-full bg-white/8" />
             </motion.div>
           </div>
 
-          {/* Right Column - Form */}
-          <motion.div 
-            variants={fadeInUp}
-            className="flex h-full w-full lg:w-6xl"
-          >
-            <form className="w-full p-6 md:p-8 rounded-2xl bg-gray-500/5">
-              <motion.div 
-                variants={staggerChildren}
-                className="flex items-center flex-col justify-center gap-4"
-              >
-                {/* Name Row */}
-                <div className="flex flex-col md:flex-row items-center justify-center gap-4 w-full">
-                  <motion.div 
-                    variants={fadeInUp}
-                    className="flex items-start flex-col justify-between gap-2 w-full md:w-1/2"
-                  >
-                    <Label className="text-[16px] leading-[24px] font-medium">First Name</Label>
+          {/* RIGHT: FORM CARD */}
+          <div className="w-full">
+            <motion.div
+              variants={reduceMotion ? undefined : fadeInRight}
+              className="rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8 shadow-[0_26px_90px_rgba(0,0,0,0.65)] backdrop-blur-sm"
+            >
+              <form className="space-y-5">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-[13px] text-white/85">
+                      First Name*
+                    </Label>
                     <Input
-                      type="text"
-                      placeholder="First Name"
-                      className="placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-normal text-[16px] leading-[24px] font-medium w-full h-12 bg-white border-none outline-none focus-visible:border-purple-500 focus-visible:ring-1 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0"
+                      placeholder="Marques"
+                      className="h-10 bg-black/35 border-white/15 text-white placeholder:text-white/25 focus-visible:ring-white/15 focus-visible:border-white/25"
                     />
-                  </motion.div>
-                  
-                  <motion.div 
-                    variants={fadeInUp}
-                    className="flex items-start flex-col justify-between gap-2 w-full md:w-1/2"
-                  >
-                    <Label className="text-[16px] leading-[24px] font-medium">Last Name</Label>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[13px] text-white/85">
+                      Last Name*
+                    </Label>
                     <Input
-                      type="text"
-                      placeholder="Last Name"
-                      className="placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-normal text-[16px] leading-[24px] font-medium w-full h-12 bg-white border-none outline-none focus-visible:border-purple-500 focus-visible:ring-1 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0"
+                      placeholder="Hansen"
+                      className="h-10 bg-black/35 border-white/15 text-white placeholder:text-white/25 focus-visible:ring-white/15 focus-visible:border-white/25"
                     />
-                  </motion.div>
+                  </div>
                 </div>
 
-                {/* Contact Row */}
-                <div className="flex flex-col md:flex-row items-center justify-center gap-4 w-full">
-                  <motion.div 
-                    variants={fadeInUp}
-                    className="flex items-start flex-col justify-between gap-2 w-full md:w-1/2"
-                  >
-                    <Label className="text-[16px] leading-[24px] font-medium">Email</Label>
-                    <Input
-                      type="email"
-                      placeholder="Your email"
-                      className="placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-normal text-[16px] leading-[24px] font-medium w-full h-12 bg-white border-none outline-none focus-visible:border-purple-500 focus-visible:ring-1 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0"
-                    />
-                  </motion.div>
-                  
-                  <motion.div 
-                    variants={fadeInUp}
-                    className="flex items-start flex-col justify-between gap-2 w-full md:w-1/2"
-                  >
-                    <Label className="text-[16px] leading-[24px] font-medium">Phone Number</Label>
-                    <Input
-                      type="tel"
-                      placeholder="Your phone"
-                      className="placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-normal text-[16px] leading-[24px] font-medium w-full h-12 bg-white border-none outline-none focus-visible:border-purple-500 focus-visible:ring-1 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0"
-                    />
-                  </motion.div>
-                </div>
-
-                {/* Message */}
-                <motion.div 
-                  variants={fadeInUp}
-                  className="w-full flex items-start flex-col justify-between gap-2"
-                >
-                  <Label className="text-[16px] leading-[24px] font-medium">Message</Label>
-                  <Textarea
-                    placeholder="Write your message"
-                    className="placeholder:text-[16px] placeholder:leading-[24px] placeholder:font-normal text-[16px] leading-[24px] font-medium w-full h-50 bg-white border-none outline-none focus-visible:border-purple-500 focus-visible:ring-1 focus-visible:ring-purple-500/50 focus-visible:ring-offset-0"
+                <div className="space-y-2">
+                  <Label className="text-[13px] text-white/85">
+                    Work Email*
+                  </Label>
+                  <Input
+                    type="email"
+                    placeholder="info@acme.com"
+                    className="h-10 bg-black/35 border-white/15 text-white placeholder:text-white/25 focus-visible:ring-white/15 focus-visible:border-white/25"
                   />
-                </motion.div>
+                </div>
 
-                {/* Submit Button */}
-                <motion.div 
-                  variants={fadeInUp}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="mt-3 w-full"
-                >
-                  <Button className="w-full h-12 text-[16px] leading-[24px] font-medium">Submit</Button>
-                </motion.div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="text-[13px] text-white/85">
+                      Company Website
+                    </Label>
+                    <Input className="h-10 bg-black/35 border-white/15 text-white placeholder:text-white/25 focus-visible:ring-white/15 focus-visible:border-white/25" />
+                  </div>
 
-                {/* Privacy Policy */}
-                <motion.div 
-                  variants={fadeInUp}
-                  className="flex items-center justify-center gap-2"
-                >
-                  <p className="text-[14px] leading-[20px] font-normal">
-                    By submitting this form you agree to our friendly{" "}
-                    <a href="/privacy-policy" className="hover:underline">Privacy Policy</a>
+                  <div className="space-y-2">
+                    <Label className="text-[13px] text-white/85">
+                      Company Size*
+                    </Label>
+                    <Select>
+                      <SelectTrigger className="w-full h-10 bg-black/35 border-white/15 text-white focus-visible:ring-white/15 focus-visible:border-white/25">
+                        <SelectValue placeholder="" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-black text-white border-white/10">
+                        <SelectItem value="1-10">1-10</SelectItem>
+                        <SelectItem value="11-50">11-50</SelectItem>
+                        <SelectItem value="51-200">51-200</SelectItem>
+                        <SelectItem value="201-1000">201-1000</SelectItem>
+                        <SelectItem value="1000+">1000+</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[13px] text-white/85">
+                    Reason for Contact*
+                  </Label>
+                  <Select>
+                    <SelectTrigger className="w-full h-10 bg-black/35 border-white/15 text-white focus-visible:ring-white/15 focus-visible:border-white/25">
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-black text-white border-white/10">
+                      <SelectItem value="pricing">Pricing</SelectItem>
+                      <SelectItem value="enterprise">Enterprise</SelectItem>
+                      <SelectItem value="migration">Migration</SelectItem>
+                      <SelectItem value="support">Support</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[13px] text-white/85">Message*</Label>
+                  <Textarea
+                    className="min-h-36 bg-black/35 border-white/15 text-white placeholder:text-white/25 focus-visible:ring-white/15 focus-visible:border-white/25 resize-none"
+                    placeholder=""
+                  />
+                </div>
+
+                <div className="pt-2 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-[12px] leading-[18px] text-white/55 max-w-[320px]">
+                    By submitting you agree to the{" "}
+                    <Link
+                      href="#"
+                      className="text-white underline underline-offset-2"
+                    >
+                      Terms Service
+                    </Link>{" "}
+                    and acknowledge the{" "}
+                    <Link
+                      href="#"
+                      className="text-white underline underline-offset-2"
+                    >
+                      Privacy Policy
+                    </Link>
+                    .
                   </p>
-                </motion.div>
-              </motion.div>
-            </form>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-    </div>
+
+                  <Button className="h-11 w-full sm:w-40 rounded-full bg-[rgb(0,230,153)] text-black hover:bg-[rgb(0,230,153)]/90">
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </motion.section>
   );
 }

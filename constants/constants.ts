@@ -1,4 +1,18 @@
-import { ChartLine, ChartNoAxesColumn, ChartPie, CheckCheck, Database, Facebook, Hand, Instagram, Linkedin, Twitter, Unplug, Webhook, Workflow } from "lucide-react";
+import {
+  ChartLine,
+  ChartNoAxesColumn,
+  ChartPie,
+  CheckCheck,
+  Database,
+  Facebook,
+  Hand,
+  Instagram,
+  Linkedin,
+  Twitter,
+  Unplug,
+  Webhook,
+  Workflow,
+} from "lucide-react";
 
 export const NAVBAR_LINKS = [
   {
@@ -15,11 +29,7 @@ export const NAVBAR_LINKS = [
   },
   {
     label: "Pricing",
-    href: "#pricing",
-  },
-  {
-    label: "FAQ",
-    href: "#faq",
+    href: "/price",
   },
 ];
 
@@ -35,8 +45,8 @@ export const FEATURES_LINKS = [
   {
     label: "Schedule Message",
     href: "/schedule-message",
-  }
-]
+  },
+];
 
 export const FEATURES = [
   {
@@ -65,8 +75,7 @@ export const FEATURES = [
   },
   {
     title: "Predictive Analytics",
-    description:
-      "Harness advanced models to forecast trends, uncover insights",
+    description: "Harness advanced models to forecast trends, uncover insights",
     image: "/assets/predictive.avif",
     gradient: "gradient-card-purple",
     col: "lg:col-span-4",
@@ -144,22 +153,44 @@ export const BENEFITS = [
 
 export const TESTIMONIALS = [
   {
-    quote: "ATPS has revolutionized the way we process data. The seamless integration and advanced analytics tools have saved us countless hours and improved our decision-making",
-    name: "Sarah J.",
-    role: "Data Analyst, TechCorp",
+    company: "Launchpad Academy",
+    quote:
+      "ATPS allowed us to deploy online exams and quizzes faster than we ever thought possible.",
+    name: "Dr. Alex H.",
+    role: "Academic Director",
     image: "/assets/user_g.png",
   },
   {
-    quote: "Thanks to ATPS, we now make data-driven decisions in real time. The predictive analytics have helped us forecast trends and stay ahead of the competition",
-    name: "Emily R.",
-    role: "Marketing Director, InnovateCo",
+    company: "OpenCampus",
+    quote:
+      "The platform’s cloud-based and proctored exam system perfectly matches our vision: no complex setup, no heavy infrastructure, just reliable digital assessments.",
+    name: "Edouard B.",
+    role: "Head of Digital Learning",
     image: "/assets/user_b.png",
   },
   {
-    quote: "The automation features in ATPS have made our workflows so much more efficient. We're now able to focus on high-priority tasks while the system handles the rest",
-    name: "Mark L.",
-    role: "Operations Manager, GrowthTech",
+    company: "EduPro",
+    quote:
+      "The secure exam monitoring and flexible quiz management were the key features that convinced us to adopt ATPS across our institution.",
+    name: "Leonard H.",
+    role: "CTO – Education Systems",
     image: "/assets/user_g.png",
+  },
+  {
+    company: "ExamSecure",
+    quote:
+      "We automated most of our assessment monitoring and quiz creation workflows using ATPS, saving enormous time for both instructors and administrators.",
+    name: "Hemanth R.",
+    role: "Learning Systems Engineer",
+    image: "/assets/user.png",
+  },
+  {
+    company: "SmartLearn",
+    quote:
+      "Instant setup and isolated exam environments made testing and deployment effortless. We now deliver exams with confidence and speed.",
+    name: "Jamie K.",
+    role: "E-Learning Program Lead",
+    image: "/assets/user_b.png",
   },
 ];
 
@@ -172,7 +203,8 @@ export const STATS = [
 export const STEPS = [
   {
     title: "Connect Your Data",
-    description: "Effortlessly integrate data from various sources into a unified system.",
+    description:
+      "Effortlessly integrate data from various sources into a unified system.",
     image: "/assets/connect.avif",
     gradient: "from-orange-100 to-pink-100",
   },
@@ -193,7 +225,7 @@ export const STEPS = [
 export const PLANS = [
   {
     name: "Starter",
-    description: "Get started with ATPS at no cost",
+    description: "Get started with Fluence AI at no cost",
     price: { monthly: "Free", yearly: "Free" },
     popular: false,
     features: [
@@ -201,30 +233,46 @@ export const PLANS = [
       "20,000 AI token inputs",
       "Calendar integration & syncing",
       "Guest sharing and links",
+      "Basic workflow templates",
+      "Standard analytics dashboard",
+      "Email support",
+      "Secure data encryption",
     ],
   },
   {
     name: "Plus",
     description: "Unlock more powerful features",
-    price: { monthly: "$22", yearly: "$18" },
+    price: { monthly: "$22", yearly: "$22" },
     popular: true,
     features: [
       "Unlimited AI credits",
       "50,000 AI token inputs",
       "Calendar integration & syncing",
       "Guest sharing and links",
+      "Team collaboration workspace",
+      "Advanced analytics dashboard",
+      "Priority email support",
+      "Custom integrations (basic)",
+      "Export reports (CSV)",
+      "Access to new features early",
     ],
   },
   {
     name: "Pro",
     description: "Take your business to the next level",
-    price: { monthly: "$69", yearly: "$55" },
+    price: { monthly: "$69", yearly: "$69" },
     popular: false,
     features: [
       "Unlimited AI creation",
       "100,000 AI token inputs",
       "Calendar integration & syncing",
       "Guest sharing and links",
+      "Advanced automation workflows",
+      "Custom integrations (advanced)",
+      "Role-based access control (RBAC)",
+      "Priority support (SLA)",
+      "Dedicated onboarding assistance",
+      "Audit logs",
     ],
   },
 ];
@@ -232,23 +280,28 @@ export const PLANS = [
 export const FAQS = [
   {
     question: "What is ATPS?",
-    answer: "ATPS is a powerful platform designed to help businesses integrate, analyze, and automate data workflows using artificial intelligence. It empowers teams to make smarter decisions and drive growth through seamless data management.",
+    answer:
+      "ATPS is a powerful platform designed to help businesses integrate, analyze, and automate data workflows using artificial intelligence. It empowers teams to make smarter decisions and drive growth through seamless data management.",
   },
   {
     question: "Can I integrate ATPS with my existing tools?",
-    answer: "Yes! ATPS supports integration with a wide range of tools and platforms. Our flexible APIs allow you to connect with your data sources effortlessly, enabling a smooth workflow.",
+    answer:
+      "Yes! ATPS supports integration with a wide range of tools and platforms. Our flexible APIs allow you to connect with your data sources effortlessly, enabling a smooth workflow.",
   },
   {
     question: "How does ATPS automate tasks?",
-    answer: "ATPS uses AI-driven workflows to automate repetitive tasks such as data processing, reporting, and notifications. This helps save time and boosts productivity for your team.",
+    answer:
+      "ATPS uses AI-driven workflows to automate repetitive tasks such as data processing, reporting, and notifications. This helps save time and boosts productivity for your team.",
   },
   {
     question: "Is my data secure with ATPS?",
-    answer: "Absolutely! ATPS takes security seriously. We use enterprise-grade encryption to protect your data, ensuring that it's secure at all stages, from integration to processing.",
+    answer:
+      "Absolutely! ATPS takes security seriously. We use enterprise-grade encryption to protect your data, ensuring that it's secure at all stages, from integration to processing.",
   },
   {
     question: "What kind of support do you offer?",
-    answer: "We offer 24/7 support via email for all users, with additional live chat and priority support for Plus and Pro plan subscribers. Our team is always ready to assist with any questions or issues you may have.",
+    answer:
+      "We offer 24/7 support via email for all users, with additional live chat and priority support for Plus and Pro plan subscribers. Our team is always ready to assist with any questions or issues you may have.",
   },
 ];
 
@@ -273,6 +326,100 @@ export const BLOG_POSTS = [
     category: "AI",
     date: "Feb 16, 2025",
     image: "/assets/girl2.avif",
+  },
+];
+
+export const BLOG_CATEGORIES = [
+  "All posts",
+  "E-Learning",
+  "Assessment",
+  "Quizzes",
+  "Proctored Exams",
+  "EdTech AI",
+  "Learning Tools",
+  "Best Practices",
+  "Security",
+  "Analytics",
+  "Case Studies",
+  "Guides",
+  "Updates",
+];
+
+export const BLOG_FEATURED_POSTS = [
+  {
+    id: "101",
+    title: "Ensuring Academic Integrity in Online Exams",
+    category: "Security",
+    date: "Dec 29, 2025",
+    image: "/assets/pic.png",
+    author: { name: "Dr. Shridhar Deshmukh", avatar: "/assets/user_g.png" },
+  },
+  {
+    id: "102",
+    title: "Scaling Digital Classrooms Without Downtime",
+    category: "EdTech",
+    date: "Dec 22, 2025",
+    image: "/assets/analystic_ad.avif",
+    author: { name: "Adi Griever", avatar: "/assets/user_b.png" },
+  },
+];
+
+export const BLOG_FEED_POSTS: Array<{
+  id: string;
+  title: string;
+  category: string;
+  date: string;
+  excerpt?: string;
+  image?: string;
+  author?: { name: string; avatar: string };
+}> = [
+  {
+    id: "103",
+    title: "Shaping the Future of Online Education in 2026",
+    category: "EdTech",
+    date: "Jan 02, 2026",
+  },
+  {
+    id: "104",
+    title: "Keeping Online Exams Secure Across Platforms",
+    category: "Security",
+    date: "Dec 23, 2025",
+    excerpt:
+      "Maintaining exam integrity is critical. Learn how secure proctoring and cloud-based solutions prevent cheating and ensure fairness.",
+    image: "/assets/cube.png",
+    author: { name: "Dr. Carlota Soto", avatar: "/assets/user_b.png" },
+  },
+  {
+    id: "105",
+    title: "Scaling Digital Classrooms for Large Student Cohorts",
+    category: "Best Practices",
+    date: "Dec 19, 2025",
+  },
+  {
+    id: "106",
+    title: "Automating Quiz Grading with AI",
+    category: "EdTech AI",
+    date: "Dec 17, 2025",
+    excerpt:
+      "Explore how AI-powered grading can reduce instructor workload and provide instant feedback to students.",
+    image: "/assets/ia_p.avif",
+    author: { name: "Pedro Figueiredo", avatar: "/assets/user_g.png" },
+  },
+  {
+    id: "107",
+    title: "Why Interactive Learning Modules Boost Engagement",
+    category: "Learning Tools",
+    date: "Dec 12, 2025",
+    excerpt:
+      "Interactive modules keep students engaged and improve knowledge retention compared to traditional static content.",
+    image: "/assets/data_m.avif",
+    author: { name: "Dr. Carlota Soto", avatar: "/assets/user_b.png" },
+  },
+  {
+    id: "108",
+    title: "Designing Effective Quizzes That Actually Improve Learning",
+    category: "Assessment",
+    date: "Dec 12, 2025",
   },
 ];
 
@@ -309,7 +456,6 @@ export const SOCIAL_LINKS = [
   },
 ];
 
-
 export const PEOPLE = [
   {
     name: "John Doe",
@@ -326,29 +472,84 @@ export const PEOPLE = [
     designation: "CFO",
     image: "/assets/user_b.png",
   },
-]
+];
 
 export const BLOG_DETAILS = [
-  
   {
     id: "1",
-    title: "Why Data Security is Vital for Every SaaS Platform",
-    category: "SAAS",
-    date: "Oct 10, 2024",
-    image: "/assets/girl1.avif", 
+    title: "Why Secure Online Exams Are Essential for Modern Education",
+    category: "E-Learning",
+    date: "Jan 10, 2026",
+    image: "/assets/online_exam.avif",
   },
   {
     id: "2",
-    title: "Efficient Strategies for Scaling Your SaaS Business",
-    category: "STARTUP",
-    date: "Mar 13, 2025",
-    image: "/assets/boys.avif",
+    title: "Best Practices for Creating Effective Online Quizzes",
+    category: "Assessment",
+    date: "Feb 13, 2026",
+    image: "/assets/quiz_strategy.avif",
   },
   {
     id: "3",
-    title: "The Ultimate SaaS Template for Startups",
-    category: "AI",
-    date: "Feb 16, 2025",
-    image: "/assets/girl2.avif",
+    title: "How Proctored Exams Improve Academic Integrity",
+    category: "EdTech",
+    date: "Mar 16, 2026",
+    image: "/assets/proctoring.avif",
+  },
+  {
+    id: "101",
+    title: "Top Tips for Automating Student Evaluations",
+    category: "Workflow",
+    date: "Jan 29, 2026",
+    image: "/assets/automation.avif",
+  },
+  {
+    id: "102",
+    title: "Data Analytics in E-Learning: Measuring Student Performance",
+    category: "Analytics",
+    date: "Feb 22, 2026",
+    image: "/assets/analytics.avif",
+  },
+  {
+    id: "103",
+    title: "Enhancing Engagement with Interactive Learning Modules",
+    category: "Learning Tools",
+    date: "Mar 02, 2026",
+    image: "/assets/interactive.avif",
+  },
+  {
+    id: "104",
+    title: "How to Keep Online Exams Secure Across Platforms",
+    category: "Security",
+    date: "Feb 23, 2026",
+    image: "/assets/security.avif",
+  },
+  {
+    id: "105",
+    title: "Setting Up Online Assessments for Large Classrooms",
+    category: "Best Practices",
+    date: "Feb 19, 2026",
+    image: "/assets/large_class.avif",
+  },
+  {
+    id: "106",
+    title: "Using AI to Detect Cheating in Online Exams",
+    category: "EdTech AI",
+    date: "Feb 17, 2026",
+    image: "/assets/ai_proctor.avif",
+  },
+  {
+    id: "107",
+    title: "The Future of E-Learning: Cloud-Based Platforms",
+    category: "E-Learning",
+    date: "Feb 12, 2026",
+    image: "/assets/cloud_learning.avif",
+  },
+  {
+    id: "108",
+    title: "Designing Quizzes that Actually Improve Learning",
+    category: "Assessment",
+    date: "Feb 12, 2026",
+    image: "/assets/quiz_design.avif",
   },
 ];

@@ -77,7 +77,7 @@ export function ProcessSection() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button className="h-12 rounded-lg bg-[#1c1033] px-10 text-base font-medium text-white shadow-sm hover:bg-[#2d1b4e]">
+                <Button className="h-12 rounded-full bg-[rgb(0,230,153)] px-10 text-base font-medium text-black shadow-sm hover:bg-[rgb(0,230,153)]/90">
                   Get Started
                 </Button>
               </motion.div>
@@ -88,7 +88,7 @@ export function ProcessSection() {
               >
                 <Button
                   variant="outline"
-                  className="h-12 rounded-lg border-white/70 bg-white/40 px-10 text-base font-medium text-black shadow-sm backdrop-blur-xl hover:bg-white/55"
+                  className="h-12 rounded-full border-gray-300 bg-white px-10 text-base font-medium text-black shadow-sm hover:bg-gray-50 hover:border-[rgb(0,230,153)]/80"
                 >
                   Book a Demo
                 </Button>

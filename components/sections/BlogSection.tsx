@@ -61,7 +61,7 @@ export function BlogSection() {
             whileTap={{ scale: 0.95 }}
             className="mt-4 lg:mt-0 w-full sm:w-auto"
           >
-            <Link href="/Blog">
+            <Link href="/blog">
               <Button
                 variant="outline"
                 className="bg-white hover:bg-gray-50 text-black px-12 py-6 rounded-md text-[16px] leading-[24px] font-medium border-gray-200 w-full sm:w-auto"
@@ -94,7 +94,7 @@ export function BlogSection() {
                 whileHover="hover"
                 className="relative h-[280px] overflow-hidden"
               >
-                <Link href={`/Blog/${post.id}`}>
+                <Link href={`/blog/${post.id}`}>
                   <Image
                     src={post.image}
                     alt={post.title}

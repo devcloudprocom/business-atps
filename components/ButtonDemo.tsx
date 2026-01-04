@@ -11,7 +11,7 @@ export function ButtonDemo() {
     >
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
         <Link href="/Contact">
-          <Button className="h-12 rounded-lg bg-[#1c1033] px-10 max-md:px-4 text-base font-medium text-white shadow-sm hover:bg-[#2d1b4e]">
+          <Button className="h-12 rounded-full bg-[rgb(0,230,153)] px-10 max-md:px-4 text-base font-medium text-black shadow-sm hover:bg-[rgb(0,230,153)]/90">
             Get Started
           </Button>
         </Link>
@@ -19,7 +19,7 @@ export function ButtonDemo() {
       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
         <Button
           variant="outline"
-          className="h-12 rounded-lg border-white/70 bg-white/40 px-10 max-md:px-4 text-base font-medium text-black shadow-sm backdrop-blur-xl hover:bg-white/55"
+          className="h-12 rounded-full border-white/20 bg-transparent px-10 max-md:px-4 text-base font-medium text-white shadow-sm backdrop-blur-xl hover:bg-white/5 hover:border-[rgb(0,230,153)]/60"
         >
           Book a Demo
         </Button>

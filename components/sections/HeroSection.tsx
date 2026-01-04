@@ -1,70 +1,87 @@
 "use client";
 
-import { Sparkle } from "lucide-react";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { motion, useReducedMotion } from "framer-motion";
 import {
-  backgroundAnimation,
-  badgeAnimation,
-  descriptionAnimation,
-  titleAnimation,
+  staggerContainer,
+  staggerItem,
+  containerAnimation,
 } from "@/lib/motion/motion";
-import { HeroMackup } from "../HeroMackup";
-import { ButtonDemo } from "../ButtonDemo";
-export function HeroSection() {
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+export default function HeroSection() {
+  const reduceMotion = useReducedMotion();
 
   return (
-    <motion.section
-      initial="initial"
-      animate={isMounted ? "animate" : "initial"}
-      className="relative w-full min-h-svh overflow-hidden"
+    <motion.div
+      className="relative w-full min-h-svh flex items-center justify-center px-4 sm:px-6 pt-24 md:pt-0"
+      initial={reduceMotion ? undefined : "initial"}
+      animate={reduceMotion ? undefined : "animate"}
+      variants={reduceMotion ? undefined : staggerContainer}
     >
       <motion.div
-        variants={backgroundAnimation}
-        className="relative flex items-center justify-center mx-auto bg-[url('/assets/bg_pic.png')] bg-cover bg-center mt-4 mr-4 ml-4 rounded-2xl mx-4 pt-24 sm:pt-28 lg:pt-32"
+        className={cn(
+          "absolute inset-0 z-0",
+          "bg-size-[40px_40px]",
+          "bg-[linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)]",
+          "dark:bg-[linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]"
+        )}
+        variants={reduceMotion ? undefined : containerAnimation}
+      />
+      {/* Radial gradient for the container to give a faded look */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white mask-[radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"
+        variants={reduceMotion ? undefined : containerAnimation}
+      ></motion.div>
+
+      <motion.div
+        className="flex w-full max-w-5xl flex-col items-center justify-center gap-8 sm:gap-10 z-10"
+        variants={reduceMotion ? undefined : staggerContainer}
       >
-        <div className="w-full max-w-7xl max-md:px-4 mx-auto pt-8 sm:pt-10">
-          {/* Badge */}
-          <motion.div
-            variants={badgeAnimation}
-            className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/20 px-4 py-1.5 shadow-sm backdrop-blur-md"
-          >
-            <div>
-              <Sparkle className="h-[12px] w-[12px] fill-pink-500 text-pink-500" />
-            </div>
-            <span className="text-[14px] font-medium leading-[16px] tracking-wide text-black/80">
-              BUSINESS &amp; SOLUTION
-            </span>
-          </motion.div>
-
-          {/* Heading */}
+        <motion.div
+          className="flex flex-col items-center justify-center"
+          variants={reduceMotion ? undefined : staggerContainer}
+        >
           <motion.h1
-            variants={titleAnimation}
-            className="mt-7 text-balance text-4xl font-medium leading-[1.06] text-[#1b0c25] md:text-5xl lg:text-[76px] lg:leading-[1.02]"
+            variants={reduceMotion ? undefined : staggerItem}
+            className="text-[40px] leading-[44px] sm:text-[56px] sm:leading-[64px] lg:text-[72px] lg:leading-[80px] max-w-3xl font-cal-sans text-center"
           >
-            The AI-powered Customer Service Platform
+            Ship faster with ATPS
           </motion.h1>
-
-          {/* Description */}
           <motion.p
-            variants={descriptionAnimation}
-            className="mt-6 max-w-2xl text-[16px] font-normal leading-6 text-[#1b0c25]/80 md:text-[18px] md:leading-7"
+            variants={reduceMotion ? undefined : staggerItem}
+            className="mt-3 text-[16px] sm:text-[18px] text-muted-foreground text-center leading-[26px] sm:leading-[32px] font-normal max-w-2xl"
           >
-            ATPS helps you connect, manage, and optimize your AI tools
-            effortlessly. Unlock powerful insights and automate complex
+            ATPS helps educational institutions create, manage, and deliver
+            online learning, exams, and assessments effortlessly. Unlock
+            actionable insights and automate evaluation and supervision
             processes with ease.
           </motion.p>
-
-          {/* Buttons */}
-          <ButtonDemo />
-          <HeroMackup />
-        </div>
+        </motion.div>
+        <motion.div
+          className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:gap-2"
+          variants={reduceMotion ? undefined : staggerContainer}
+        >
+          <motion.div
+            variants={reduceMotion ? undefined : staggerItem}
+            whileHover={reduceMotion ? undefined : { scale: 1.02 }}
+            whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+          >
+            <Button className="w-full sm:w-auto bg-[rgb(0,230,153)] hover:bg-[rgb(0,230,153)]/90 h-14 px-8 text-black text-[16px] leading-[24px] font-medium rounded-full">
+              Start for Free
+            </Button>
+          </motion.div>
+          <motion.div
+            variants={reduceMotion ? undefined : staggerItem}
+            whileHover={reduceMotion ? undefined : { scale: 1.02 }}
+            whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+          >
+            <Button className="w-full sm:w-auto bg-transparent hover:bg-transparent text-white text-[16px] leading-[24px] font-medium rounded-full h-14 px-8 sm:h-9 sm:px-4 sm:py-2">
+              Talk to Us ⟶
+            </Button>
+          </motion.div>
+        </motion.div>
       </motion.div>
-    </motion.section>
+    </motion.div>
   );
 }

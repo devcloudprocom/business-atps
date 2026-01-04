@@ -1,281 +1,298 @@
 "use client";
 
-import { STATS, TESTIMONIALS } from "@/constants/constants";
+import { TESTIMONIALS } from "@/constants/constants";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  badgeAnimation,
-  carouselAnimation,
-  containerAnimation,
-  counterAnimation,
-  defaultViewport,
-  headerAnimation,
-  navButtonAnimation,
-  statItemAnimation,
-  statsContainerAnimation,
-  testimonialSlideAnimation,
-  titleAnimation,
-} from "@/lib/motion/motion";
-import CountUp from "../CountUp";
+  animate,
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 export function TestimonialsSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(1);
 
-  useEffect(() => {
-    // Auto slide
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
+  const items = useMemo(() => {
+    const fallbackCompanies = [
+      "Koyeb",
+      "Vercel",
+      "Supabase",
+      "Railway",
+      "Render",
+    ];
+    return TESTIMONIALS.map((t, i) => ({
+      ...t,
+      company:
+        (t as typeof t & { company?: string }).company ??
+        fallbackCompanies[i % fallbackCompanies.length],
+    }));
   }, []);
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-  };
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
 
-  const prevSlide = () => {
-    setCurrentIndex(
-      (prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length
-    );
-  };
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    const next = clamp(Math.round(v * (items.length - 1)), 0, items.length - 1);
+    setActiveIndex(next);
+  });
 
   return (
-    <motion.section
-      initial="initial"
-      whileInView="animate"
-      viewport={defaultViewport}
-      variants={containerAnimation}
+    <section
+      ref={sectionRef}
       id="testimonial"
-      className="bg-[url('/assets/bg_pic.png')] bg-cover bg-center mr-4 ml-4 rounded-2xl py-20 relative overflow-hidden"
+      className="relative w-full min-h-[120vh] bg-black text-white overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto max-md:px-4 py-12 md:py-16 relative z-10">
-        {/* Section Header */}
-        <motion.div variants={headerAnimation} className="text-center mb-12">
-          <motion.div
-            variants={badgeAnimation}
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-1.5 mb-4 shadow-xl border border-purple-500"
-          >
-            <span className="text-[14px] leading-[16px] tracking-wide font-medium text-gray-700">
-              WALL OF LOVE
-            </span>
-          </motion.div>
+      {/* left rail background (lines + glow) */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-30 hidden md:block w-[320px] lg:w-[420px]"
+      >
+        {/* base wash */}
+        <div className="absolute inset-0 bg-linear-to-r from-white/9 via-white/4 to-transparent" />
 
-          <motion.h2
-            variants={titleAnimation}
-            className="text-4xl md:text-[60px] font-medium leading-[60px] mb-4"
-          >
-            What they&apos;re Saying
-          </motion.h2>
-        </motion.div>
+        {/* vertical scan lines */}
+        <div
+          className="absolute inset-0 opacity-70"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(to right, rgba(255,255,255,0.10) 0 1px, transparent 1px 10px)",
+          }}
+        />
 
-        {/* Testimonial Carousel */}
-        <motion.div
-          variants={carouselAnimation}
-          className="relative max-w-2xl mx-auto mb-12"
-        >
-          <div className="bg-white/80 rounded-2xl p-6 sm:p-10 shadow-card overflow-hidden">
-            <AnimatePresence mode="wait" custom={currentIndex}>
+        {/* subtle dot texture */}
+        <div
+          className="absolute inset-0 opacity-[0.20]"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(255,255,255,0.12) 1px, transparent 0)",
+            backgroundSize: "18px 18px",
+          }}
+        />
+
+        {/* glow blobs */}
+        <div className="absolute -left-28 bottom-6 h-80 w-80 rounded-full bg-sky-500/18 blur-3xl" />
+        <div className="absolute -left-16 top-16 h-96 w-96 rounded-full bg-indigo-500/10 blur-3xl" />
+
+        {/* right edge separator */}
+        <div className="absolute inset-y-0 right-0 w-px bg-linear-to-b from-transparent via-white/14 to-transparent" />
+      </div>
+
+      <div className="relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-0 py-20 sm:py-28">
+        {/* header */}
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-[44px] leading-[1.02] sm:text-[56px] font-cal-sans tracking-tight">
+            Testimonials
+            <br />
+            from our users
+          </h2>
+          <div className="mt-4">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-[12px] tracking-wide text-white/60 hover:text-white/80 transition-colors"
+            >
+              Dive into real education success stories{" "}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </div>
+
+        {/* content */}
+        <div className="mt-14 ml-15 grid grid-cols-1 gap-10 md:grid-cols-[280px_1fr] lg:grid-cols-[360px_1fr] md:gap-14">
+          {/* left rail: brands */}
+          <div className="relative hidden md:block">
+            <div className="sticky top-40">
               <motion.div
-                key={currentIndex}
-                custom={currentIndex}
-                variants={testimonialSlideAnimation}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="flex flex-col gap-6"
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-4 text-white/90"
               >
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    transition: {
-                      duration: 0.5,
-                      ease: "easeOut" as const,
-                      delay: 0.1,
-                    },
-                  }}
-                  className="text-base sm:text-lg lg:text-[24px] leading-[32px] font-medium text-gray-800"
-                >
-                  &ldquo;{TESTIMONIALS[currentIndex].quote}&rdquo;
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                    transition: {
-                      duration: 0.5,
-                      ease: "easeOut" as const,
-                      delay: 0.2,
-                    },
-                  }}
-                  className="flex items-center gap-3"
-                >
-                  <motion.div
-                    transition={{ duration: 0.5 }}
-                    className="w-12 h-12 rounded-full overflow-hidden bg-gray-200"
-                  >
-                    <Image
-                      src={TESTIMONIALS[currentIndex].image}
-                      alt={TESTIMONIALS[currentIndex].name}
-                      width={48}
-                      height={48}
-                      className="object-cover w-full h-full"
-                    />
-                  </motion.div>
-
-                  <div>
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{
-                        opacity: 1,
-                        transition: { delay: 0.3 },
-                      }}
-                      className="font-medium text-[16px] leading-[26px]"
-                    >
-                      {TESTIMONIALS[currentIndex].name}
-                    </motion.p>
-
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{
-                        opacity: 1,
-                        transition: { delay: 0.4 },
-                      }}
-                      className="text-gray-500 text-[16px] leading-[26px] font-normal"
-                    >
-                      {TESTIMONIALS[currentIndex].role}
-                    </motion.p>
+                <div className="relative grid place-items-center h-10 w-10 rounded-full border border-white/12 bg-white/2">
+                  <div className="absolute inset-0 rounded-full bg-[rgb(0,230,153)]/10 blur-md" />
+                  <span className="relative h-2.5 w-2.5 rounded-full bg-[rgb(0,230,153)]" />
+                </div>
+                <div>
+                  <div className="text-[11px] tracking-[0.18em] text-white/45">
+                    FEATURED
                   </div>
-                </motion.div>
+                  <div className="mt-0.5 text-[18px] font-medium tracking-wide text-white/90">
+                    {items[activeIndex]?.company ?? "Koyeb"}
+                  </div>
+                </div>
               </motion.div>
-            </AnimatePresence>
+
+              <div className="relative mt-10 space-y-2">
+                {/* vertical label */}
+                <div
+                  className="pointer-events-none absolute -left-10 top-0 text-[10px] tracking-[0.32em] text-white/18"
+                  style={{ writingMode: "vertical-rl" }}
+                >
+                  TESTIMONIALS
+                </div>
+
+                {items.map((t, i) => (
+                  <div key={`${t.company}-${i}`} className="relative">
+                    {i === activeIndex ? (
+                      <motion.div
+                        layoutId="active-brand"
+                        className="absolute -inset-x-3 inset-y-0 rounded-lg bg-linear-to-r from-white/10 via-white/6 to-transparent"
+                      />
+                    ) : null}
+
+                    <div
+                      className={[
+                        "relative flex items-center gap-3 rounded-lg px-2 py-1.5 text-[12px] tracking-wide transition-colors",
+                        i === activeIndex ? "text-white/85" : "text-white/28",
+                      ].join(" ")}
+                    >
+                      <span
+                        className={[
+                          "h-1.5 w-1.5 rounded-full",
+                          i === activeIndex
+                            ? "bg-[rgb(0,230,153)]"
+                            : "bg-white/18",
+                        ].join(" ")}
+                      />
+                      <span className="truncate">{t.company}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
-          {/* Navigation Arrows */}
-          <motion.button
-            variants={navButtonAnimation}
-            whileHover="hover"
-            whileTap="tap"
-            type="button"
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 sm:-translate-x-4 lg:-translate-x-12 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-          >
-            <motion.svg
-              animate={{ x: [-2, 0, -2] }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut" as const,
-              }}
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </motion.svg>
-          </motion.button>
+          {/* stack */}
+          <div className="relative">
+            <div className="pointer-events-none absolute inset-x-0 -top-6 h-24 bg-linear-to-b from-black to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 -bottom-6 h-24 bg-linear-to-t from-black to-transparent" />
 
-          <motion.button
-            variants={navButtonAnimation}
-            whileHover="hover"
-            whileTap="tap"
-            type="button"
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 sm:translate-x-4 lg:translate-x-12 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
-          >
-            <motion.svg
-              animate={{ x: [0, 2, 0] }}
-              transition={{
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut" as const,
-              }}
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M9 18l6-6-6-6" />
-            </motion.svg>
-          </motion.button>
-
-          {/* Dots indicator */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: { delay: 0.6 },
-            }}
-            className="flex justify-center gap-2 mt-6"
-          >
-            {TESTIMONIALS.map((_, index) => (
-              <motion.button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  index === currentIndex ? "bg-purple-600" : "bg-gray-300"
-                }`}
-                whileHover={{ scale: 1.5 }}
-                animate={{
-                  scale: index === currentIndex ? 1.2 : 1,
-                }}
-              />
-            ))}
-          </motion.div>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          variants={statsContainerAnimation}
-          className="flex flex-wrap justify-center gap-8 lg:gap-16 mb-12"
-        >
-          {STATS.map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              variants={statItemAnimation}
-              custom={index}
-              whileHover="hover"
-              className="text-center"
-            >
-              <motion.p
-                variants={counterAnimation(stat.value)}
-                className="text-3xl sm:text-[44px] leading-[52px] font-medium mb-2"
-              >
-                <CountUp
-                  to={parseInt(stat.value.replace(/,/g, ""))}
-                  duration={2}
-                  delay={0}
-                  separator=","
+            <div className="relative mx-auto h-[720px] max-w-2xl overflow-hidden">
+              {items.map((t, i) => (
+                <TestimonialCard
+                  key={`${t.name}-${i}`}
+                  item={t}
+                  index={i}
+                  activeIndex={activeIndex}
+                  scrollYProgress={scrollYProgress}
                 />
-                {stat.sign}
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{
-                  opacity: 1,
-                  transition: { delay: 0.5 + index * 0.1 },
-                }}
-                className="text-gray-600 text-[16px] leading-[26px] font-normal"
-              >
-                {stat.label}
-              </motion.p>
-            </motion.div>
-          ))}
-        </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
-    </motion.section>
+    </section>
   );
+}
+
+function TestimonialCard({
+  item,
+  index,
+  activeIndex,
+  scrollYProgress,
+}: {
+  item: {
+    quote: string;
+    name: string;
+    role: string;
+    image: string;
+    company?: string;
+  };
+  index: number;
+  activeIndex: number;
+  scrollYProgress: import("framer-motion").MotionValue<number>;
+}) {
+  const distance = Math.abs(index - activeIndex);
+  const opacity = distance === 0 ? 1 : distance === 1 ? 0.32 : 0.14;
+  const blurPx = distance === 0 ? 0 : distance === 1 ? 3 : 6;
+  const scale = distance === 0 ? 1 : 0.985;
+
+  const baseOffset = (index - activeIndex) * 220;
+
+  // Smooth transition between cards when activeIndex changes
+  const baseY = useMotionValue(baseOffset);
+  useEffect(() => {
+    const controls = animate(baseY, baseOffset, {
+      type: "spring",
+      stiffness: 320,
+      damping: 32,
+      mass: 0.7,
+    });
+    return () => controls.stop();
+  }, [baseOffset, baseY]);
+
+  // subtle parallax drift (depth feeling)
+  const parallaxY = useTransform(
+    scrollYProgress,
+    (v) => (v - 0.5) * index * 14
+  );
+  const y = useTransform(
+    [baseY, parallaxY],
+    ([b, p]) => (b as number) + (p as number)
+  );
+  const zIndex = 50 - distance;
+
+  return (
+    <motion.div
+      style={{
+        y,
+        zIndex,
+      }}
+      animate={{
+        opacity,
+        scale,
+        filter: `blur(${blurPx}px)`,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 30,
+        mass: 0.6,
+        opacity: { duration: 0.22 },
+        filter: { duration: 0.22 },
+      }}
+      className={[
+        "absolute left-0 right-0 top-1/2 -translate-y-1/2 rounded-2xl border px-6 py-5 sm:px-7 sm:py-6",
+        distance === 0
+          ? "border-white/12 bg-white/6"
+          : "border-white/6 bg-white/0",
+      ].join(" ")}
+    >
+      <div className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-white/5" />
+
+      <div className="text-[14px] leading-6 sm:text-[16px] sm:leading-7 text-white/70">
+        {item.quote}
+      </div>
+
+      <div className="mt-5 flex items-center gap-3">
+        <div className="relative h-8 w-8 overflow-hidden rounded-full bg-white/10">
+          <Image
+            src={item.image}
+            alt={item.name}
+            fill
+            sizes="32px"
+            className="object-cover grayscale contrast-125 brightness-110"
+          />
+        </div>
+        <div className="min-w-0">
+          <div className="text-[12px] font-medium text-white/85 leading-4 truncate">
+            {item.name}
+          </div>
+          <div className="mt-0.5 text-[11px] text-white/45 leading-4 truncate">
+            {item.role}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
 }

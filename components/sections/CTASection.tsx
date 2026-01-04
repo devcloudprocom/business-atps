@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  badgeAnimation,
   containerAnimation,
   defaultViewport,
   titleAnimation,
@@ -17,21 +16,12 @@ export function CTASection() {
       viewport={defaultViewport}
       variants={containerAnimation}
       id="contact"
-      className="pt-20 relative overflow-hidden"
+      className="relative overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div
-          variants={badgeAnimation}
-          className="inline-flex items-center gap-2 bg-white backdrop-blur-sm rounded-full px-4 py-1.5 mb-6 border border-purple-500"
-        >
-          <span className="text-[14px] leading-[16px] tracking-wide font-medium text-black">
-            JOIN THE AI REVOLUTION
-          </span>
-        </motion.div>
-
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 lg:px-0">
         <motion.h2
           variants={titleAnimation}
-          className="text-4xl sm:text-5xl md:text-[76px] leading-tight md:leading-[76px] font-medium mb-8 max-w-3xl text-white"
+          className="text-4xl sm:text-5xl font-cal-sans md:text-[76px] leading-tight md:leading-[76px] font-medium mb-8 max-w-3xl text-white"
         >
           Ready to start your AI journey with us?
         </motion.h2>

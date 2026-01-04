@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
-import { Inter } from "next/font/google";
+import { Cal_Sans, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const generalSans = localFont({
   display: "swap",
@@ -67,6 +67,12 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const calSans = Cal_Sans({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-cal-sans",
+});
+
 export const metadata: Metadata = {
   title: "ATPS",
   description:
@@ -81,12 +87,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${generalSans.variable} ${inter.variable} font-sans antialiased`}
+        className={`${generalSans.variable} ${inter.variable} ${calSans.variable} font-sans antialiased dark`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
         >
           {children}

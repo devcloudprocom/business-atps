@@ -1,174 +1,122 @@
 "use client";
-import { FAQS, PEOPLE } from "@/constants/constants";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+
 import {
-  avatarsAnimation,
-  badgeAnimation,
-  contactAnimation,
-  containerAnimation,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+import { FAQS } from "@/constants/constants";
+import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  buttonAnimation,
   defaultViewport,
-  faqContentAnimation,
   faqItemAnimation,
   faqsContainerAnimation,
-  headerAnimation,
-  mainCardAnimation,
-  plusMinusAnimation,
+  subtitleAnimation,
   titleAnimation,
 } from "@/lib/motion/motion";
-import { AnimatedTooltip } from "../ui/animated-tooltip";
 
 export function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
   return (
-    <motion.section
-      initial="initial"
-      whileInView="animate"
-      viewport={defaultViewport}
-      variants={containerAnimation}
-      id="faq"
-      className="bg-[#faf9fb] py-20"
-    >
-      <div className="max-w-7xl mx-auto max-md:px-4">
-        {/* Main Card */}
-        <motion.div
-          variants={mainCardAnimation}
-          whileHover={{
-            y: -5,
-            transition: { duration: 0.3 },
-          }}
-          className="bg-white border border-gray-200 flex flex-col lg:flex-row justify-between items-start gap-8 rounded-xl p-6 lg:p-8"
+    <div className="w-full">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-start gap-8 px-4 sm:px-6 lg:px-0">
+        <motion.h1
+          className="text-[32px] leading-[38px] sm:text-[50px] sm:leading-[56px] max-w-lg font-medium font-cal-sans text-center lg:text-left"
+          initial={titleAnimation.initial}
+          whileInView={titleAnimation.animate}
+          viewport={defaultViewport}
         >
-          {/* Section Header */}
+          Your question, answered.
+        </motion.h1>
+        <div className="flex flex-col w-full max-w-2xl gap-4">
           <motion.div
-            variants={headerAnimation}
-            className="flex flex-col gap-4 items-start justify-start"
+            className="w-full"
+            variants={{
+              initial: faqsContainerAnimation.initial,
+              animate: faqsContainerAnimation.animate,
+            }}
+            initial="initial"
+            whileInView="animate"
+            viewport={defaultViewport}
           >
-            <div>
-              <motion.div
-                variants={badgeAnimation}
-                whileHover={{ scale: 1.05, rotate: 5 }}
-                className="inline-flex items-center gap-2 bg-white rounded-full px-4 py-1.5 mb-4 shadow-xl border border-purple-500"
-              >
-                <span className="text-[14px] leading-[16px] tracking-wide font-medium text-gray-700">
-                  FAQ
-                </span>
-              </motion.div>
-
-              <motion.h2
-                variants={titleAnimation}
-                className="text-3xl sm:text-[44px] leading-tight sm:leading-[53px] max-w-lg font-medium mb-4"
-              >
-                Frequently Asked Questions
-              </motion.h2>
-            </div>
-
-            <motion.div
-              variants={contactAnimation}
-              className="flex flex-col gap-2"
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full"
+              defaultValue="item-1"
             >
-              <p className="text-[24px] leading-[28px] font-medium mb-2">
-                Still have a question?
-              </p>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <a
-                  href="#contact"
-                  className="text-[16px] leading-[24px] font-medium hover:underline"
-                >
-                  Contact us!
-                </a>
-                <p className="text-gray-500 text-[16px] leading-[24px] font-normal">
-                  We&apos;ll be happy to help you.
-                </p>
-              </div>
-
-              <motion.div
-                variants={avatarsAnimation}
-                className="flex gap-2 mt-4"
-              >
-                <AnimatedTooltip
-                  items={PEOPLE.map((person, index) => ({
-                    id: index,
-                    ...person,
-                  }))}
-                />
-              </motion.div>
-            </motion.div>
-          </motion.div>
-
-          {/* FAQ Items */}
-          <motion.div
-            variants={faqsContainerAnimation}
-            className="flex flex-col gap-4 w-full lg:w-[700px]"
-          >
-            {FAQS.map((faq, index) => {
-              const isOpen = openIndex === index;
-
-              return (
-                <motion.div
-                  key={faq.question}
-                  variants={faqItemAnimation}
-                  custom={index}
-                  whileHover={{
-                    scale: 1.01,
-                    transition: { duration: 0.2 },
-                  }}
-                  className={`bg-gray-400/10 p-4 rounded-lg transition-all ${
-                    isOpen ? "bg-gray-400/20" : ""
-                  }`}
-                >
-                  {/* Question */}
-                  <motion.button
-                    onClick={() => toggleFAQ(index)}
-                    className="w-full flex items-center justify-between text-left"
-                    whileHover={{ x: 5 }}
-                    whileTap={{ scale: 0.98 }}
+              {FAQS.map((faq, index) => {
+                const value = `item-${index + 1}`;
+                return (
+                  <motion.div
+                    key={value}
+                    variants={{
+                      initial: faqItemAnimation.initial,
+                      animate: faqItemAnimation.animate,
+                    }}
                   >
-                    <h3 className="text-[18px] sm:text-[24px] leading-tight sm:leading-[29px] font-medium">
-                      {faq.question}
-                    </h3>
-
-                    <motion.span
-                      animate={isOpen ? "expanded" : "collapsed"}
-                      variants={plusMinusAnimation}
-                      className="text-2xl font-medium text-black w-6 h-6 flex items-center justify-center"
-                    >
-                      {isOpen ? "−" : "+"}
-                    </motion.span>
-                  </motion.button>
-
-                  {/* Answer */}
-                  <AnimatePresence initial={false}>
-                    {isOpen && (
-                      <motion.div
-                        initial="collapsed"
-                        animate="expanded"
-                        exit="collapsed"
-                        variants={faqContentAnimation}
-                        className="overflow-hidden"
-                      >
-                        <motion.p
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.1 }}
-                          className="mt-2 text-[16px] leading-[24px] font-normal text-gray-500"
-                        >
-                          {faq.answer}
-                        </motion.p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
+                    <AccordionItem value={value}>
+                      <AccordionTrigger className="text-[20px] leading-[26px] sm:text-[26px] sm:leading-[32px] font-normal hover:text-[rgb(0,230,153)]">
+                        {faq.question}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-[16px] leading-[24px] font-normal">
+                        <p className="text-muted-foreground">{faq.answer}</p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </motion.div>
+                );
+              })}
+            </Accordion>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
-    </motion.section>
+      <div className="relative w-full flex justify-between items-center flex-col gap-4 py-20 sm:py-50 mt-10">
+        <div
+          className={cn(
+            "absolute inset-0 z-0",
+            "bg-size-[40px_40px]",
+            "bg-[linear-gradient(to_right,#e4e4e7_1px,transparent_1px),linear-gradient(to_bottom,#e4e4e7_1px,transparent_1px)]",
+            "dark:bg-[linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]"
+          )}
+        />
+        {/* Radial gradient for the container to give a faded look */}
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-white mask-[radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
+        <div className="z-10 w-full flex justify-center items-center flex-col gap-10 text-center">
+          <div className="flex flex-col gap-2">
+            <motion.h1
+              className="text-[32px] leading-[38px] sm:text-[50px] sm:leading-[56px] max-w-lg font-medium font-cal-sans"
+              initial={titleAnimation.initial}
+              whileInView={titleAnimation.animate}
+              viewport={defaultViewport}
+            >
+              Still have questions?
+            </motion.h1>
+            <motion.p
+              className="text-[16px] leading-[24px] font-normal text-muted-foreground"
+              initial={subtitleAnimation.initial}
+              whileInView={subtitleAnimation.animate}
+              viewport={defaultViewport}
+            >
+              Contact us for more information.
+            </motion.p>
+          </div>
+          <Link href="/contact">
+            <motion.div
+              initial={buttonAnimation.initial}
+              whileInView={buttonAnimation.animate}
+              viewport={defaultViewport}
+            >
+              <Button className="rounded-full text-[16px] h-[50px] bg-[rgb(0,230,153)] text-black hover:bg-[rgb(0,230,153)]/90">
+                Contact Us
+              </Button>
+            </motion.div>
+          </Link>
+        </div>
+      </div>
+    </div>
   );
 }
